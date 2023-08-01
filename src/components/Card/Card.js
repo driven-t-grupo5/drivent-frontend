@@ -1,8 +1,15 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 export const Card = ({ name, price }) => {
+  const [selected, setSelected] = useState(false);
+
+  const handleClick = () => {
+    setSelected(!selected);
+  };
+
   return (
-    <StyledConteiner>
+    <StyledConteiner onClick={handleClick} selected={selected}>
       <StyledName>{name}</StyledName>
       <StyledPrice>{price}</StyledPrice>
     </StyledConteiner>
@@ -19,6 +26,7 @@ const StyledConteiner = styled.div`
   align-items: center;
   justify-content: center;
   gap: 5px;
+  background-color: ${(props) => (props.selected ? '#FFEED2' : '#FFFFFF')};
 `;
 
 const StyledName = styled.p`
