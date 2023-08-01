@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-export const Card = ({ name, price }) => {
+export const Card = ({ name, price, onClick }) => {
   const [selected, setSelected] = useState(false);
 
   const handleClick = () => {
     setSelected(!selected);
+    if (onClick) {
+      onClick();
+    }
   };
 
   return (
