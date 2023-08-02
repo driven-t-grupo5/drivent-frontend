@@ -5,7 +5,6 @@ import { Card } from '../../../components/Card/Card';
 import { Title } from '../../../components/Title/Title';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';
 
-
 const objCard = [
   { name: 'Presencial', price: 'R$250,00' },
   { name: 'Online', price: 'R$100,00' },
@@ -30,7 +29,7 @@ const HospedagemOptions = () => {
 };
 
 export default function Payment() {
-const [showHospedagem, setShowHospedagem] = useState(false);
+  const [showHospedagem, setShowHospedagem] = useState(false);
 
   const handlePresencialClick = () => {
     setShowHospedagem((prev) => !prev);
@@ -60,7 +59,7 @@ const [showHospedagem, setShowHospedagem] = useState(false);
       {showHospedagem && <HospedagemOptions />}
       {/*aqui é o payment*/}
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
-      <Subtitle>Ingresso escolhido</Subtitle>
+      <PaymentSubtitle>Ingresso escolhido</PaymentSubtitle>
       <Ticket>
         <TicketInfo>
           <p>{info.type} + {info.hotel}</p>
@@ -70,7 +69,7 @@ const [showHospedagem, setShowHospedagem] = useState(false);
       <Main>
         <p>Pagamento</p>
         <Container>
-          <Card>
+          <CreditCard>
             <img src="https://img.freepik.com/icones-gratis/cartao-de-credito_318-534836.jpg" />
             <p>•••• •••• •••• ••••</p>
             <div>
@@ -81,7 +80,7 @@ const [showHospedagem, setShowHospedagem] = useState(false);
               </div>
             </div>
 
-          </Card>
+          </CreditCard>
           <Data>
             <input placeholder='Card Number' ></input>
             <p>E.g.:49...,51...,36...,37...</p>
@@ -111,7 +110,7 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 20px!important;
 `;
 
-const Subtitle = styled.div`
+const PaymentSubtitle = styled.div`
   color: #8E8E8E;
   font-size: 20px;
   font-weight: 400;
@@ -191,7 +190,7 @@ const Container = styled.div`
   display:flex;
 `;
 
-const Card = styled.div`
+const CreditCard = styled.div`
   height:86%;
   width:40%;
   background-color:#929292;
@@ -277,11 +276,11 @@ const Data = styled.div`
       margin-left:20px;
       width:100px;
     }
-  }`
+  }
+`;
+
 const StyledCard = styled.div`
   display: flex;
   flex-direction: row;
   gap: 15px;
 `;
-
-
