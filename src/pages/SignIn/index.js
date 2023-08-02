@@ -39,10 +39,10 @@ export default function SignIn() {
   } 
 
   return (
-    <AuthLayout background={eventInfo.backgroundImageUrl}>
+    <AuthLayout /*background={eventInfo.backgroundImageUrl}*/>
       <Row>
         <img src={eventInfo.logoImageUrl} alt="Event Logo" width="60px" />
-        <Title>{eventInfo.title}</Title>
+        <Title>{eventInfo.Title}</Title>
       </Row>
       <Row>
         <Label>Entrar</Label>
