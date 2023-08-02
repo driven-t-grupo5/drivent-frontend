@@ -36,6 +36,7 @@ export default function Payment() {
 
   const handleOnlineClick = () => {
     // setShowHospedagem((prev) => !prev);
+    // TODO - puxar as opcoes de online
   };
 
   return (
