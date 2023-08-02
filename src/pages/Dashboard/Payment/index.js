@@ -40,7 +40,14 @@ export default function Payment() {
     // TODO - puxar as opcoes de online
   };
 
+  const [creditCard, setCreditCard] = useState({ number: '•••• •••• •••• ••••', name: 'YOUR NAME HERE', valid: '••/••', cvc: '' });
+  
   const [info, setInfo] = useState({ type: '', hotel: '', total: '' });
+  const [confirmPayment, setConfirmPayment] = useState('none');
+  function paymentFinalization() {
+    setConfirmPayment('flex');
+  }
+  
   return (
     <>
       <Title title="Ingresso e pagamento" />
@@ -68,34 +75,34 @@ export default function Payment() {
       </Ticket>
       <Main>
         <p>Pagamento</p>
-        <Container>
+        <Container confirmPayment={confirmPayment}>
           <CreditCard>
             <img src="https://img.freepik.com/icones-gratis/cartao-de-credito_318-534836.jpg" />
-            <p>•••• •••• •••• ••••</p>
+            <p>{creditCard.number}</p>
             <div>
-              <p>YOUR NAME HERE</p>
+              <p>{creditCard.name}</p>
               <div>
                 <p>valid thru</p>
-                <p>••/••</p>
+                <p>{creditCard.valid}</p>
               </div>
             </div>
 
           </CreditCard>
           <Data>
-            <input placeholder='Card Number' ></input>
+            {console.log(creditCard)}
+            <input placeholder='Card Number'  onChange={e => setCreditCard({ ...creditCard, number: e.target.value })}></input>
             <p>E.g.:49...,51...,36...,37...</p>
-            <input placeholder='Name'  ></input>
+            <input placeholder='Name'  onChange={e => setCreditCard({ ...creditCard, name: e.target.value })} ></input>
             <div>
-              <input placeholder='Valid Thru'  ></input>
-              <input placeholder='CVC'  ></input>
+              <input placeholder='Valid Thru'  onChange={e => setCreditCard({ ...creditCard, valid: e.target.value })}  ></input>
+              <input placeholder='CVC'   onChange={e => setCreditCard({ ...creditCard, cvc: e.target.value })}></input>
             </div>
-
           </Data>
         </Container>
 
       </Main>
-      <Button>FINALIZAR PAGAMENTO</Button>
-      <PaymentSucess>
+      <Button confirmPayment={confirmPayment} onClick={paymentFinalization}>FINALIZAR PAGAMENTO</Button>
+      <PaymentSucess confirmPayment={confirmPayment}>
         <ion-icon name="checkmark-circle"></ion-icon>
         <PaymentText>
           <p>Pagamento confirmado!</p>
@@ -142,6 +149,7 @@ const TicketInfo = styled.div`
 `;
 
 const Button = styled.button`
+  display:${props => (props.confirmPayment==='flex') ? 'none' : 'inline'};
   border: none;
   margin-top: 10px;
   width: 182px;
@@ -151,11 +159,15 @@ const Button = styled.button`
   font-size: 14px;
   background-color: #E0E0E0;
   box-shadow: 0px 2px 10px 0px #00000040;
+  :hover{
+    cursor: pointer;
+  }
 `;
 
 const PaymentSucess = styled.div`
+  margin-top:20px;
   color: #454545;
-  display: flex;
+  display: ${props => props.confirmPayment};
   flex-wrap: wrap;
   ion-icon{
     color: #36b853;
@@ -187,7 +199,7 @@ const Container = styled.div`
   height:225px;
   width:706;
   margin-top:20px;
-  display:flex;
+  display:${props => (props.confirmPayment==='flex') ? 'none' : 'flex'};
 `;
 
 const CreditCard = styled.div`
@@ -197,14 +209,14 @@ const CreditCard = styled.div`
   margin-right:20px;
   border-radius:20px;
   padding:18px;
+  position:relative;
   img{
     height:30%;
     width:20%;
     margin-bottom:20px;
   }
   p:last-child{
-
-  font-size:20px;
+  font-size:15px;
   margin-left:5px;
   margin-bottom:0px;
   letter-spacing:2px;
@@ -212,7 +224,7 @@ const CreditCard = styled.div`
   p{
     color:#ffffff;
     font-size:24px;
-    letter-spacing:6px;
+    letter-spacing:2px;
     margin-bottom:30px;
   }
   div{
@@ -223,14 +235,15 @@ const CreditCard = styled.div`
       
       margin-right:34px;
     }
-  }
-  div {
     div{
       display:flex;
       flex-direction:column;
+      position:absolute;
+      bottom:34px;
+      right:18px;
       p{
-        margin-top:-12px;
-        margin-bottom:10px;
+        margin-top:0px;
+        margin-bottom:0px;
         font-size:12px;
       }
     }
