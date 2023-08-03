@@ -1,48 +1,38 @@
-import styled from 'styled-components';
-import { Title } from '../../../components/Title/Title.js';
 import useHotels from '../../../hooks/api/useHotels.js';
 import useToken from '../../../hooks/useToken.js';
+import ErrorMessage from '../../../components/Hotels/ErrorMessage.js';
+import HotelsSection from '../../../components/Hotels/HotelsSection.js';
+import { useState } from 'react';
+import { Typography } from '@material-ui/core';
+import useRooms from '../../../hooks/api/useRooms.js';
 
-function ErrorMessage({ statusCode }) {
+function Heading() {
   return (
-    <>
-      <ErrorContainer>
-        {statusCode === 402 ? (
-          <>
-            <p>Sua modalidade de ingresso não inclui hospedagem</p>
-            <p>Prossiga para a escolha de atividades</p>
-          </>
-        ) : (
-          <p>Você precisa ter o pagamento confirmado antes de fazer a escolha da hospedagem</p>
-        )}
-      </ErrorContainer>
-    </>
+    <Typography variant="h4" component="h1">
+      Escolha de hotel e quarto
+    </Typography>
   );
 }
 
 export default function Hotel() {
   const token = useToken();
-  const { hotels, hotelsLoading, hotelsError } = useHotels(token);
+  const { hotels, hotelsError } = useHotels(token);
+  const [selectedHotelId, setSelectedHotelId] = useState(null);
+  const { rooms, roomsError } = useRooms(token, selectedHotelId);
+
+  if (hotelsError) {
+    return (
+      <>
+        <Heading />
+        <ErrorMessage statusCode={hotelsError.status} />
+      </>
+    );
+  }
 
   return (
     <>
-      <Title title="Escolha de hotel e quarto" />
-      {hotelsError ? <ErrorMessage statusCode={hotelsError.status} /> : <></>}
+      <Heading />
+      <HotelsSection hotels={hotels} selectedHotelId={selectedHotelId} setSelectedHotelId={setSelectedHotelId} />
     </>
   );
 }
-
-const ErrorContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  line-height: 1.5;
-  font-family: 'Roboto', sans-serif;
-  font-size: 20px;
-  color: #8e8e8e;
-`;

@@ -18,8 +18,10 @@ export default function useRooms(token, hotelId) {
   }
 
   useEffect(() => {
-    action();
-  }, []);
+    if (hotelId !== null) {
+      action(token);
+    }
+  }, [hotelId]);
 
   return {
     rooms,
