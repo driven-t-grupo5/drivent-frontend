@@ -6,43 +6,51 @@ import { Title } from '../../../components/Title/Title';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';
 import useToken from '../../../hooks/useToken';
 import usePayment from '../../../hooks/api/usePayment';
+import { HotelConfirmation } from '../../../components/HotelConfirmation/HotelConfirmation';
+
 
 const objCard = [
-  { name: 'Presencial', price: 'R$250,00' },
-  { name: 'Online', price: 'R$100,00' },
+  { name: 'Presencial', price: 250 },
+  { name: 'Online', price: 100 },
 ];
 
 const objHospedagem = [
-  { name: 'Sem Hotel', price: 'R$0,00' },
-  { name: 'Com Hotel', price: 'R$350,00' },
+  { name: 'Sem Hotel', price: 0 },
+  { name: 'Com Hotel', price: 350 },
 ];
-
-const HospedagemOptions = () => {
-  return (
-    <>
-      <Subtitle subtitle="Ótimo! Agora escolha sua modalidade de hospedagem" />
-      <StyledCard>
-        {objHospedagem.map((item, index) => (
-          <Card key={index} name={item.name} price={item.price} />
-        ))}
-      </StyledCard>
-    </>
-  );
-};
 
 export default function Payment() {
   const [showHospedagem, setShowHospedagem] = useState(false);
+  const [showHotel, setShowHotel] = useState(false);
 
   const handlePresencialClick = () => {
     setShowHospedagem((prev) => !prev);
   };
 
+  const handleHotalConfirmationClick = () => {
+    setShowHotel((prev) => !prev);
+  };
+
   const handleOnlineClick = () => {
-    // setShowHospedagem((prev) => !prev);
-    // TODO - puxar as opcoes de online
+    setShowHotel((prev) => !prev);
   };
 
   const [creditCard, setCreditCard] = useState({ number: '•••• •••• •••• ••••', name: 'YOUR NAME HERE', valid: '••/••', cvc: '' });
+
+  const totalPrice = () => {
+    // TODO - realizar o calculo
+  };
+
+  const handleViewPayment = () => {
+    // TODO - puxar tela de payment
+  };
+
+  const [creditCard, setCreditCard] = useState({
+    number: '•••• •••• •••• ••••',
+    name: 'YOUR NAME HERE',
+    valid: '••/••',
+    cvc: '',
+  });
 
   const [info, setInfo] = useState({ type: '', hotel: '', total: '' });
   const [confirmPayment, setConfirmPayment] = useState('none');
@@ -90,19 +98,39 @@ export default function Payment() {
           <Card
             key={index}
             name={item.name}
-            price={item.price}
+            price={`R$${item.price},00`}
             onClick={item.name === 'Presencial' ? handlePresencialClick : handleOnlineClick}
           />
         ))}
       </StyledCard>
 
-      {showHospedagem && <HospedagemOptions />}
+      {showHospedagem && (
+        <>
+          <Subtitle subtitle="Ótimo! Agora escolha sua modalidade de hospedagem" />
+          <StyledCard>
+            {objHospedagem.map((item, index) => (
+              <Card key={index} name={item.name} price={`R$${item.price},00`} onClick={handleHotalConfirmationClick} />
+            ))}
+          </StyledCard>
+        </>
+      )}
+
+      {showHotel && (
+        <HotelConfirmation
+          subtitle={`Fechado! O total ficou em R$ ${totalPrice},00. Agora é só confirmar`}
+          button="RESERVAR INGRESSO"
+          onClick={handleViewPayment}
+        />
+      )}
+
       {/*aqui é o payment*/}
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
       <PaymentSubtitle>Ingresso escolhido</PaymentSubtitle>
       <Ticket>
         <TicketInfo>
-          <p>{info.type} + {info.hotel}</p>
+          <p>
+            {info.type} + {info.hotel}
+          </p>
           <p>R$ {info.total}</p>
         </TicketInfo>
       </Ticket>
@@ -119,9 +147,9 @@ export default function Payment() {
                 <p>{creditCard.valid}</p>
               </div>
             </div>
-
           </CreditCard>
           <Data>
+
             <form onSubmit={(e) => paymentFinalization(e)}>
               <input placeholder='Card Number' required onChange={e => setCreditCard({ ...creditCard, number: e.target.value })}></input>
               <p>E.g.:49...,51...,36...,37...</p>
@@ -132,9 +160,9 @@ export default function Payment() {
               </div>
               <Button confirmPayment={confirmPayment} type="submit">FINALIZAR PAGAMENTO</Button>
             </form>
+
           </Data>
         </Container>
-
       </Main>
       <PaymentSucess confirmPayment={confirmPayment}>
         <ion-icon name="checkmark-circle"></ion-icon>
@@ -145,20 +173,20 @@ export default function Payment() {
       </PaymentSucess>
     </>
   );
-};
+}
 
 const StyledTypography = styled(Typography)`
-  margin-bottom: 20px!important;
+  margin-bottom: 20px !important;
 `;
 
 const PaymentSubtitle = styled.div`
-  color: #8E8E8E;
+  color: #8e8e8e;
   font-size: 20px;
   font-weight: 400;
 `;
 
 const Ticket = styled.div`
-  background-color: #FFEED2;
+  background-color: #ffeed2;
   width: 290px;
   height: 108px;
   border-radius: 20px;
@@ -173,13 +201,13 @@ const TicketInfo = styled.div`
   p:nth-child(1) {
     color: #454545;
     font-size: 16px;
-  };
-  p:nth-child(2){
+  }
+  p:nth-child(2) {
     color: #898989;
     text-align: center;
     font-size: 14px;
     margin-top: 10px;
-  };
+  }
 `;
 
 const Button = styled.button`
@@ -190,9 +218,9 @@ const Button = styled.button`
   border-radius: 4px;
   color: #000000;
   font-size: 14px;
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
   box-shadow: 0px 2px 10px 0px #00000040;
-  :hover{
+  :hover {
     cursor: pointer;
   }
   position: absolute;
@@ -202,26 +230,26 @@ const Button = styled.button`
 const PaymentSucess = styled.div`
   margin-top:5px;
   color: #454545;
-  display: ${props => props.confirmPayment};
+  display: ${(props) => props.confirmPayment};
   flex-wrap: wrap;
-  ion-icon{
+  ion-icon {
     color: #36b853;
     width: 44px;
     height: 44px;
-  };
+  }
 `;
 
 const PaymentText = styled.div`
   margin-left: 5px;
-  p:nth-child(1){
+  p:nth-child(1) {
     margin-top: 5px;
     font-weight: 700;
     font-size: 16px;
-  };
-  p:nth-child(2){
+  }
+  p:nth-child(2) {
     font-weight: 400;
     font-size: 16px;
-  };
+  }
 `;
 const Main = styled.div`
   padding-bottom: 30px;
@@ -239,48 +267,48 @@ const Container = styled.div`
 `;
 
 const CreditCard = styled.div`
-  height:86%;
-  width:40%;
-  background-color:#929292;
-  margin-right:20px;
-  border-radius:20px;
-  padding:18px;
-  position:relative;
-  img{
-    height:30%;
-    width:20%;
-    margin-bottom:20px;
+  height: 86%;
+  width: 40%;
+  background-color: #929292;
+  margin-right: 20px;
+  border-radius: 20px;
+  padding: 18px;
+  position: relative;
+  img {
+    height: 30%;
+    width: 20%;
+    margin-bottom: 20px;
   }
-  p:last-child{
-  font-size:15px;
-  margin-left:5px;
-  margin-bottom:0px;
-  letter-spacing:2px;
+  p:last-child {
+    font-size: 15px;
+    margin-left: 5px;
+    margin-bottom: 0px;
+    letter-spacing: 2px;
   }
-  p{
-    color:#ffffff;
-    font-size:24px;
-    letter-spacing:2px;
-    margin-bottom:30px;
+  p {
+    color: #ffffff;
+    font-size: 24px;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
   }
-  div{
-    display:flex;
-    p{
-      font-size:16px;
-      letter-spacing:0px;
-      
-      margin-right:34px;
+  div {
+    display: flex;
+    p {
+      font-size: 16px;
+      letter-spacing: 0px;
+
+      margin-right: 34px;
     }
-    div{
-      display:flex;
-      flex-direction:column;
-      position:absolute;
-      bottom:34px;
-      right:18px;
-      p{
-        margin-top:0px;
-        margin-bottom:0px;
-        font-size:12px;
+    div {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      bottom: 34px;
+      right: 18px;
+      p {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-size: 12px;
       }
     }
   }
@@ -299,13 +327,13 @@ const Data = styled.div`
     font-size:14px;
     margin-bottom:24px;
   }
-  input{
-    height:40px;
-    border-radius:6px;
-    margin-bottom:28px;
-    font-size:20px;
+  input {
+    height: 40px;
+    border-radius: 6px;
+    margin-bottom: 28px;
+    font-size: 20px;
     padding: 6px;
-    color:black;
+    color: black;
     border: 1px solid #b3b4b4;
   }
   input:first-child{
@@ -317,20 +345,20 @@ const Data = styled.div`
   };
   input:focus{
     border: 1px solid black;
-    outline:0;
+    outline: 0;
   }
-  input::placeholder{
-    font-size:20px;
-    color:#b3b4b4;
+  input::placeholder {
+    font-size: 20px;
+    color: #b3b4b4;
   }
-  div{
-    display:flex;
-    input:first-child{
-      width:400px;
+  div {
+    display: flex;
+    input:first-child {
+      width: 400px;
     }
-    input:last-child{
-      margin-left:20px;
-      width:100px;
+    input:last-child {
+      margin-left: 20px;
+      width: 100px;
     }
   }
 `;
