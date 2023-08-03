@@ -8,7 +8,6 @@ import useToken from '../../../hooks/useToken';
 import usePayment from '../../../hooks/api/usePayment';
 import { HotelConfirmation } from '../../../components/HotelConfirmation/HotelConfirmation';
 
-
 const objCard = [
   { name: 'Presencial', price: 250 },
   { name: 'Online', price: 100 },
@@ -34,8 +33,6 @@ export default function Payment() {
   const handleOnlineClick = () => {
     setShowHotel((prev) => !prev);
   };
-
-  const [creditCard, setCreditCard] = useState({ number: '•••• •••• •••• ••••', name: 'YOUR NAME HERE', valid: '••/••', cvc: '' });
 
   const totalPrice = () => {
     // TODO - realizar o calculo
