@@ -4,7 +4,10 @@ import { useState } from 'react';
 import { Card } from '../../../components/Card/Card';
 import { Title } from '../../../components/Title/Title';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';
+import useToken from '../../../hooks/useToken';
+import usePayment from '../../../hooks/api/usePayment';
 import { HotelConfirmation } from '../../../components/HotelConfirmation/HotelConfirmation';
+
 
 const objCard = [
   { name: 'Presencial', price: 250 },
@@ -32,6 +35,8 @@ export default function Payment() {
     setShowHotel((prev) => !prev);
   };
 
+  const [creditCard, setCreditCard] = useState({ number: '•••• •••• •••• ••••', name: 'YOUR NAME HERE', valid: '••/••', cvc: '' });
+
   const totalPrice = () => {
     // TODO - realizar o calculo
   };
@@ -49,8 +54,39 @@ export default function Payment() {
 
   const [info, setInfo] = useState({ type: '', hotel: '', total: '' });
   const [confirmPayment, setConfirmPayment] = useState('none');
-  function paymentFinalization() {
+
+  var cartoes = {
+    Visa: /^4[0-9]{12}(?:[0-9]{3})/,
+    Mastercard: /^5[1-5][0-9]{14}/,
+    Amex: /^3[47][0-9]{13}/,
+    DinersClub: /^3(?:0[0-5]|[68][0-9])[0-9]{11}/,
+    Discover: /^6(?:011|5[0-9]{2})[0-9]{12}/,
+    JCB: /^(?:2131|1800|35\d{3})\d{11}/
+  };
+
+  function testarCC(nr, cartoes) {
+    for (var cartao in cartoes) if (nr.match(cartoes[cartao])) return cartao;
+    return false;
+  }
+
+  const token = useToken();
+
+  function paymentFinalization(e) {
+    e.preventDefault();
     setConfirmPayment('flex');
+    const data = {
+      ticketId: '',
+      cardData: {
+        issuer: testarCC(creditCard.number, cartoes),
+        number: creditCard.number,
+        name: creditCard.name,
+        expirationDate: creditCard.valid,
+        cvv: creditCard.cvc
+      }
+    };
+
+    const { payment, paymentError, paymentLoading } = usePayment(data, token);
+    console.log(payment);
   }
 
   return (
@@ -113,26 +149,21 @@ export default function Payment() {
             </div>
           </CreditCard>
           <Data>
-            {console.log(creditCard)}
-            <input
-              placeholder="Card Number"
-              onChange={(e) => setCreditCard({ ...creditCard, number: e.target.value })}
-            ></input>
-            <p>E.g.:49...,51...,36...,37...</p>
-            <input placeholder="Name" onChange={(e) => setCreditCard({ ...creditCard, name: e.target.value })}></input>
-            <div>
-              <input
-                placeholder="Valid Thru"
-                onChange={(e) => setCreditCard({ ...creditCard, valid: e.target.value })}
-              ></input>
-              <input placeholder="CVC" onChange={(e) => setCreditCard({ ...creditCard, cvc: e.target.value })}></input>
-            </div>
+
+            <form onSubmit={(e) => paymentFinalization(e)}>
+              <input placeholder='Card Number' required onChange={e => setCreditCard({ ...creditCard, number: e.target.value })}></input>
+              <p>E.g.:49...,51...,36...,37...</p>
+              <input placeholder='Name' required onChange={e => setCreditCard({ ...creditCard, name: e.target.value })} ></input>
+              <div>
+                <input placeholder='Valid Thru' required onChange={e => setCreditCard({ ...creditCard, valid: e.target.value })}  ></input>
+                <input placeholder='CVC' required onChange={e => setCreditCard({ ...creditCard, cvc: e.target.value })}></input>
+              </div>
+              <Button confirmPayment={confirmPayment} type="submit">FINALIZAR PAGAMENTO</Button>
+            </form>
+
           </Data>
         </Container>
       </Main>
-      <Button confirmPayment={confirmPayment} onClick={paymentFinalization}>
-        FINALIZAR PAGAMENTO
-      </Button>
       <PaymentSucess confirmPayment={confirmPayment}>
         <ion-icon name="checkmark-circle"></ion-icon>
         <PaymentText>
@@ -180,9 +211,8 @@ const TicketInfo = styled.div`
 `;
 
 const Button = styled.button`
-  display: ${(props) => (props.confirmPayment === 'flex' ? 'none' : 'inline')};
+  display:${props => (props.confirmPayment === 'flex') ? 'none' : 'inline'};
   border: none;
-  margin-top: 10px;
   width: 182px;
   height: 37px;
   border-radius: 4px;
@@ -193,10 +223,12 @@ const Button = styled.button`
   :hover {
     cursor: pointer;
   }
+  position: absolute;
+  left: 35px;
 `;
 
 const PaymentSucess = styled.div`
-  margin-top: 20px;
+  margin-top:5px;
   color: #454545;
   display: ${(props) => props.confirmPayment};
   flex-wrap: wrap;
@@ -220,17 +252,18 @@ const PaymentText = styled.div`
   }
 `;
 const Main = styled.div`
-  p {
-    font-size: 20px;
-    color: #8e8e8e;
+  padding-bottom: 30px;
+  p{
+    font-size:20px;
+    color:#8E8E8E;
   }
 `;
 
 const Container = styled.div`
-  height: 225px;
-  width: 706;
-  margin-top: 20px;
-  display: ${(props) => (props.confirmPayment === 'flex' ? 'none' : 'flex')};
+  height:225px;
+  width:706;
+  margin-top:20px;
+  display:${props => (props.confirmPayment === 'flex') ? 'none' : 'flex'};
 `;
 
 const CreditCard = styled.div`
@@ -282,14 +315,17 @@ const CreditCard = styled.div`
 `;
 
 const Data = styled.div`
-  height: 100%;
-  width: 58%;
-  display: flex;
-  flex-direction: column;
-  p {
-    margin-top: 4px;
-    font-size: 14px;
-    margin-bottom: 24px;
+  height:100%;
+  width:58%;
+  display:flex;
+  flex-direction:column;
+  form{
+    width: 100%;
+  };
+  p{
+    margin-top:4px;
+    font-size:14px;
+    margin-bottom:24px;
   }
   input {
     height: 40px;
@@ -300,10 +336,14 @@ const Data = styled.div`
     color: black;
     border: 1px solid #b3b4b4;
   }
-  input:first-child {
-    margin-bottom: 0px;
+  input:first-child{
+    margin-bottom:0px;
+    width: 100%;
   }
-  input:focus {
+  input:nth-child(3){
+    width: 100%;
+  };
+  input:focus{
     border: 1px solid black;
     outline: 0;
   }
