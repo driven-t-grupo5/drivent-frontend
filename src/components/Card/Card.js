@@ -1,18 +1,16 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
-export const Card = ({ name, price, onClick }) => {
-  const [selected, setSelected] = useState(false);
-
+export const Card = ({ name, price, selectedName, setSelectedName }) => {
   const handleClick = () => {
-    setSelected(!selected);
-    if (onClick) {
-      onClick();
+    if (selectedName === name) {
+      setSelectedName(null);
+      return;
     }
+    setSelectedName(name);
   };
 
   return (
-    <StyledConteiner onClick={handleClick} selected={selected}>
+    <StyledConteiner onClick={handleClick} selected={selectedName === name}>
       <StyledName>{name}</StyledName>
       <StyledPrice>{price}</StyledPrice>
     </StyledConteiner>
