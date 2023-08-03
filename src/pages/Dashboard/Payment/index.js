@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { Card } from '../../../components/Card/Card';
 import { Title } from '../../../components/Title/Title';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';
-import useToken from '../../../hooks/useToken';
-import usePayment from '../../../hooks/api/usePayment';
 import { HotelConfirmation } from '../../../components/HotelConfirmation/HotelConfirmation';
+import axios from 'axios';
 
 const objCard = [
   { name: 'Presencial', price: 250 },
@@ -21,7 +20,7 @@ const objHospedagem = [
 export default function Payment() {
   const [showHospedagem, setShowHospedagem] = useState(false);
   const [showHotel, setShowHotel] = useState(false);
-
+  
   const handlePresencialClick = () => {
     setShowHospedagem((prev) => !prev);
   };
@@ -64,13 +63,10 @@ export default function Payment() {
   function testarCC(nr, cartoes) {
     for (var cartao in cartoes) if (nr.match(cartoes[cartao])) return cartao;
     return false;
-  }
-
-  const token = useToken();
+  };
 
   function paymentFinalization(e) {
     e.preventDefault();
-    setConfirmPayment('flex');
     const data = {
       ticketId: '',
       cardData: {
@@ -81,9 +77,22 @@ export default function Payment() {
         cvv: creditCard.cvc
       }
     };
+    const user = JSON.parse(localStorage.getItem('userData'));
+    console.log(user.token);
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/payments/process`, data, {
+      headers: {
+        'Authorization': `Bearer ${user.token}`
+      },
+    });
 
-    const { payment, paymentError, paymentLoading } = usePayment(data, token);
-    console.log(payment);
+    promise.then((res) => {
+      setConfirmPayment('flex');
+      alert('Pagamento concluido com sucesso');
+    });
+    promise.catch((erro) => {
+      console.log(erro.response);
+      alert(`${erro.response.status} ${erro.response.statusText}`);
+    });
   }
 
   return (
