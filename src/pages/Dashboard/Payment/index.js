@@ -18,23 +18,16 @@ const objHospedagem = [
 ];
 
 export default function Payment() {
-  const [showHospedagem, setShowHospedagem] = useState(false);
-  const [showHotel, setShowHotel] = useState(false);
-  
-  const handlePresencialClick = () => {
-    setShowHospedagem((prev) => !prev);
-  };
-
-  const handleHotalConfirmationClick = () => {
-    setShowHotel((prev) => !prev);
-  };
-
-  const handleOnlineClick = () => {
-    setShowHotel((prev) => !prev);
-  };
+  const [ticketModality, setTicketModality] = useState(null);
+  const [showHotel, setShowHotel] = useState(null);
 
   const totalPrice = () => {
     // TODO - realizar o calculo
+    let price = objCard.find((item) => item.name === ticketModality).price;
+    if (showHotel) {
+      price += objHospedagem.find((item) => item.name === showHotel).price;
+    }
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   };
 
   const handleViewPayment = () => {
@@ -57,13 +50,13 @@ export default function Payment() {
     Amex: /^3[47][0-9]{13}/,
     DinersClub: /^3(?:0[0-5]|[68][0-9])[0-9]{11}/,
     Discover: /^6(?:011|5[0-9]{2})[0-9]{12}/,
-    JCB: /^(?:2131|1800|35\d{3})\d{11}/
+    JCB: /^(?:2131|1800|35\d{3})\d{11}/,
   };
 
   function testarCC(nr, cartoes) {
     for (var cartao in cartoes) if (nr.match(cartoes[cartao])) return cartao;
     return false;
-  };
+  }
 
   function paymentFinalization(e) {
     e.preventDefault();
@@ -74,14 +67,14 @@ export default function Payment() {
         number: creditCard.number,
         name: creditCard.name,
         expirationDate: creditCard.valid,
-        cvv: creditCard.cvc
-      }
+        cvv: creditCard.cvc,
+      },
     };
     const user = JSON.parse(localStorage.getItem('userData'));
     console.log(user.token);
     const promise = axios.post(`${process.env.REACT_APP_API_URL}/payments/process`, data, {
       headers: {
-        'Authorization': `Bearer ${user.token}`
+        Authorization: `Bearer ${user.token}`,
       },
     });
 
@@ -105,27 +98,33 @@ export default function Payment() {
             key={index}
             name={item.name}
             price={`R$${item.price},00`}
-            onClick={item.name === 'Presencial' ? handlePresencialClick : handleOnlineClick}
+            selectedName={ticketModality}
+            setSelectedName={setTicketModality}
           />
         ))}
       </StyledCard>
 
-      {showHospedagem && (
+      {ticketModality === 'Presencial' && (
         <>
           <Subtitle subtitle="Ótimo! Agora escolha sua modalidade de hospedagem" />
           <StyledCard>
             {objHospedagem.map((item, index) => (
-              <Card key={index} name={item.name} price={`R$${item.price},00`} onClick={handleHotalConfirmationClick} />
+              <Card
+                key={index}
+                name={item.name}
+                price={`R$${item.price},00`}
+                selectedName={showHotel}
+                setSelectedName={setShowHotel}
+              />
             ))}
           </StyledCard>
         </>
       )}
 
-      {showHotel && (
+      {(ticketModality === 'Online' || showHotel) && (
         <HotelConfirmation
-          subtitle={`Fechado! O total ficou em R$ ${totalPrice},00. Agora é só confirmar`}
+          subtitle={`Fechado! O total ficou em ${totalPrice()}. Agora é só confirmar`}
           button="RESERVAR INGRESSO"
-          onClick={handleViewPayment}
         />
       )}
 
@@ -155,18 +154,34 @@ export default function Payment() {
             </div>
           </CreditCard>
           <Data>
-
             <form onSubmit={(e) => paymentFinalization(e)}>
-              <input placeholder='Card Number' required onChange={e => setCreditCard({ ...creditCard, number: e.target.value })}></input>
+              <input
+                placeholder="Card Number"
+                required
+                onChange={(e) => setCreditCard({ ...creditCard, number: e.target.value })}
+              ></input>
               <p>E.g.:49...,51...,36...,37...</p>
-              <input placeholder='Name' required onChange={e => setCreditCard({ ...creditCard, name: e.target.value })} ></input>
+              <input
+                placeholder="Name"
+                required
+                onChange={(e) => setCreditCard({ ...creditCard, name: e.target.value })}
+              ></input>
               <div>
-                <input placeholder='Valid Thru' required onChange={e => setCreditCard({ ...creditCard, valid: e.target.value })}  ></input>
-                <input placeholder='CVC' required onChange={e => setCreditCard({ ...creditCard, cvc: e.target.value })}></input>
+                <input
+                  placeholder="Valid Thru"
+                  required
+                  onChange={(e) => setCreditCard({ ...creditCard, valid: e.target.value })}
+                ></input>
+                <input
+                  placeholder="CVC"
+                  required
+                  onChange={(e) => setCreditCard({ ...creditCard, cvc: e.target.value })}
+                ></input>
               </div>
-              <Button confirmPayment={confirmPayment} type="submit">FINALIZAR PAGAMENTO</Button>
+              <Button confirmPayment={confirmPayment} type="submit">
+                FINALIZAR PAGAMENTO
+              </Button>
             </form>
-
           </Data>
         </Container>
       </Main>
@@ -217,7 +232,7 @@ const TicketInfo = styled.div`
 `;
 
 const Button = styled.button`
-  display:${props => (props.confirmPayment === 'flex') ? 'none' : 'inline'};
+  display: ${(props) => (props.confirmPayment === 'flex' ? 'none' : 'inline')};
   border: none;
   width: 182px;
   height: 37px;
@@ -234,7 +249,7 @@ const Button = styled.button`
 `;
 
 const PaymentSucess = styled.div`
-  margin-top:5px;
+  margin-top: 5px;
   color: #454545;
   display: ${(props) => props.confirmPayment};
   flex-wrap: wrap;
@@ -259,17 +274,17 @@ const PaymentText = styled.div`
 `;
 const Main = styled.div`
   padding-bottom: 30px;
-  p{
-    font-size:20px;
-    color:#8E8E8E;
+  p {
+    font-size: 20px;
+    color: #8e8e8e;
   }
 `;
 
 const Container = styled.div`
-  height:225px;
-  width:706;
-  margin-top:20px;
-  display:${props => (props.confirmPayment === 'flex') ? 'none' : 'flex'};
+  height: 225px;
+  width: 706;
+  margin-top: 20px;
+  display: ${(props) => (props.confirmPayment === 'flex' ? 'none' : 'flex')};
 `;
 
 const CreditCard = styled.div`
@@ -321,17 +336,17 @@ const CreditCard = styled.div`
 `;
 
 const Data = styled.div`
-  height:100%;
-  width:58%;
-  display:flex;
-  flex-direction:column;
-  form{
+  height: 100%;
+  width: 58%;
+  display: flex;
+  flex-direction: column;
+  form {
     width: 100%;
-  };
-  p{
-    margin-top:4px;
-    font-size:14px;
-    margin-bottom:24px;
+  }
+  p {
+    margin-top: 4px;
+    font-size: 14px;
+    margin-bottom: 24px;
   }
   input {
     height: 40px;
@@ -342,14 +357,14 @@ const Data = styled.div`
     color: black;
     border: 1px solid #b3b4b4;
   }
-  input:first-child{
-    margin-bottom:0px;
+  input:first-child {
+    margin-bottom: 0px;
     width: 100%;
   }
-  input:nth-child(3){
+  input:nth-child(3) {
     width: 100%;
-  };
-  input:focus{
+  }
+  input:focus {
     border: 1px solid black;
     outline: 0;
   }
