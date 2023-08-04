@@ -1,8 +1,8 @@
 import { Box, Card, CardActionArea, CardContent, Grid, Typography, makeStyles } from '@material-ui/core';
 import { BsPerson, BsPersonFill } from 'react-icons/bs';
 
-function CapacityIcons({ capacity, guests, iconClassName }) {
-  const availableBeds = capacity - guests;
+function CapacityIcons({ capacity, guests, iconClassName, roomSelected }) {
+  const availableBeds = capacity - guests - (roomSelected ? 1 : 0);
   const bedStates = Array(capacity)
     .fill(true)
     .map((_, index) => index >= availableBeds);
@@ -41,6 +41,9 @@ const useStyles = makeStyles({
   icon: {
     height: 25,
     width: 25,
+    '&:last-child': {
+      color: (props) => (props.roomSelected ? '#FF4791' : null),
+    },
   },
 });
 
@@ -61,7 +64,12 @@ export default function RoomCard({ room, roomSelected, setSelectedRoomId }) {
           <CardContent className={classes.cardContent}>
             <Box className={classes.iconsBox}>
               <Typography variant="h6">{room.name}</Typography>
-              <CapacityIcons capacity={room.capacity} guests={room.guests} iconClassName={classes.icon} />
+              <CapacityIcons
+                capacity={room.capacity}
+                guests={room.guests}
+                iconClassName={classes.icon}
+                roomSelected={roomSelected}
+              />
             </Box>
           </CardContent>
         </CardActionArea>
