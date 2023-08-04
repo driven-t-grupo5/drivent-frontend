@@ -5,6 +5,7 @@ import HotelsSection from '../../../components/Hotels/HotelsSection.js';
 import { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import useRooms from '../../../hooks/api/useRooms.js';
+import RoomsSection from '../../../components/Hotels/RoomsSection.js';
 
 function Heading() {
   return (
@@ -18,7 +19,8 @@ export default function Hotel() {
   const token = useToken();
   const { hotels, hotelsError } = useHotels(token);
   const [selectedHotelId, setSelectedHotelId] = useState(null);
-  const { rooms, roomsError } = useRooms(token, selectedHotelId);
+  const { selectedHotel } = useRooms(token, selectedHotelId);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   if (hotelsError) {
     return (
@@ -33,6 +35,13 @@ export default function Hotel() {
     <>
       <Heading />
       <HotelsSection hotels={hotels} selectedHotelId={selectedHotelId} setSelectedHotelId={setSelectedHotelId} />
+      {selectedHotel && (
+        <RoomsSection
+          rooms={selectedHotel.Rooms}
+          selectedRoomId={selectedRoomId}
+          setSelectedRoomId={setSelectedRoomId}
+        />
+      )}
     </>
   );
 }

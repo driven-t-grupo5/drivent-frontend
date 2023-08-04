@@ -3,7 +3,7 @@ import HotelCard from './HotelCard.js';
 
 const useStyles = makeStyles({
   hotelsContainer: {
-    marginTop: 10,
+    marginBlock: 10,
     flexDirection: 'row-reverse',
     justifyContent: 'start',
   },
