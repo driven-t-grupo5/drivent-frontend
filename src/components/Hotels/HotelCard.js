@@ -11,6 +11,9 @@ const useStyles = makeStyles({
     marginTop: 16,
     borderRadius: 5,
   },
+  availableRooms: {
+    fontWeight: 700,
+  },
 });
 
 export default function HotelCard({ hotel, hotelSelected, setSelectedHotelId }) {
@@ -29,8 +32,10 @@ export default function HotelCard({ hotel, hotelSelected, setSelectedHotelId }) 
           <CardMedia className={classes.media} image={hotel.image} />
           <CardContent>
             <Typography variant="h6">{hotel.name}</Typography>
-            <Typography variant="body2">Capacidade:</Typography>
-            <Typography variant="body2">{hotel.capacity}</Typography>
+            <Typography className={classes.availableRooms} variant="caption">
+              Quartos disponíveis:
+            </Typography>{' '}
+            <Typography variant="caption">{hotel.availableRooms}</Typography>
           </CardContent>
         </CardActionArea>
       </Card>
