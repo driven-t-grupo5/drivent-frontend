@@ -16,18 +16,17 @@ const useStyles = makeStyles({
   },
 });
 
-export default function HotelCard({ hotel, hotelSelected, setSelectedHotelId }) {
+export default function HotelCard({ hotel, hotelSelected, setSelectedHotelId, setSelectedRoomId }) {
   const classes = useStyles({ hotelSelected });
+
+  const handleClick = () => {
+    setSelectedHotelId(hotel.id);
+    setSelectedRoomId(null);
+  };
 
   return (
     <Grid item>
-      <Card
-        className={classes.hotelCard}
-        hotelSelected={hotelSelected}
-        onClick={() => {
-          setSelectedHotelId(hotel.id);
-        }}
-      >
+      <Card className={classes.hotelCard} hotelSelected={hotelSelected} onClick={handleClick}>
         <CardActionArea onClick={() => setSelectedHotelId(hotel.id)}>
           <CardMedia className={classes.media} image={hotel.image} />
           <CardContent>

@@ -34,7 +34,12 @@ export default function Hotel() {
   return (
     <>
       <Heading />
-      <HotelsSection hotels={hotels} selectedHotelId={selectedHotelId} setSelectedHotelId={setSelectedHotelId} />
+      <HotelsSection
+        hotels={hotels}
+        selectedHotelId={selectedHotelId}
+        setSelectedHotelId={setSelectedHotelId}
+        setSelectedRoomId={setSelectedRoomId}
+      />
       {selectedHotel && (
         <RoomsSection
           rooms={selectedHotel.Rooms}
