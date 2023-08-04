@@ -2,7 +2,7 @@ import * as hotelsApi from '../../services/hotelApi.js';
 import { useEffect, useState } from 'react';
 
 export default function useRooms(token, hotelId) {
-  const [rooms, setRooms] = useState(null);
+  const [selectedHotel, setRooms] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,12 +18,14 @@ export default function useRooms(token, hotelId) {
   }
 
   useEffect(() => {
-    action();
-  }, []);
+    if (hotelId !== null) {
+      action(token);
+    }
+  }, [hotelId]);
 
   return {
-    rooms,
-    roomsLoading: loading,
-    roomsError: error,
+    selectedHotel,
+    selectedHotelLoading: loading,
+    selectedHotelError: error,
   };
 }
