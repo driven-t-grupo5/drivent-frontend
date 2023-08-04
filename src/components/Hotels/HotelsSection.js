@@ -9,7 +9,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function HotelsSection({ hotels, selectedHotelId, setSelectedHotelId }) {
+export default function HotelsSection({ hotels, selectedHotelId, setSelectedHotelId, setSelectedRoomId }) {
   const classes = useStyles();
 
   return (
@@ -25,6 +25,7 @@ export default function HotelsSection({ hotels, selectedHotelId, setSelectedHote
               hotel={hotel}
               hotelSelected={hotel.id === selectedHotelId}
               setSelectedHotelId={setSelectedHotelId}
+              setSelectedRoomId={setSelectedRoomId}
             />
           ))}
       </Grid>
