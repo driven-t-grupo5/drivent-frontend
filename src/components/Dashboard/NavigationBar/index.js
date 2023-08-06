@@ -28,8 +28,8 @@ export default function NavigationBar() {
         </NavigationButton>
       </Link>
 
-      <Link to="/dashboard/payment">
-        <NavigationButton active={isActive('/dashboard/payment')}>
+      <Link to="/dashboard/ticket">
+        <NavigationButton active={isActive('/dashboard/ticket')}>
           <FaMoneyBill />
           <span>Pagamento</span>
         </NavigationButton>

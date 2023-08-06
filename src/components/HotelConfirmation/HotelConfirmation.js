@@ -1,11 +1,20 @@
 import styled from 'styled-components';
 import { Subtitle } from '../Subtitle/Subtitle';
 
-export const HotelConfirmation = ({ subtitle, button }) => {
+export const HotelConfirmation = ({ subtitle, button, setUserTicket, userTicket, setCallPayment }) => {
+  function setReserve() {
+    console.log('button value', button);
+    if(button ==='RESERVAR INGRESSO') {
+      setUserTicket( { ...userTicket, ticketStatus: 'RESERVED' } );
+    }  
+
+    setCallPayment(true);
+  }
+
   return (
     <>
       <Subtitle subtitle={subtitle} />
-      <StyledButton>{button}</StyledButton>
+      <StyledButton onClick={() => {setReserve();}}>{button}</StyledButton>
     </>
   );
 };

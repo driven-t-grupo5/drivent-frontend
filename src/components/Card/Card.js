@@ -1,7 +1,19 @@
 import styled from 'styled-components';
 
-export const Card = ({ name, price, selectedName, setSelectedName }) => {
+export const Card = ({ name, price, selectedName, setSelectedName, setUserTicket }) => {
   const handleClick = () => {
+    if (name === 'Com Hotel') {
+      setUserTicket( { isRemote: false, includesHotel: true });
+    }
+    if (name === 'Sem Hotel') {
+      setUserTicket( { isRemote: false, includesHotel: false });
+    }
+    if(name === 'Presencial') {
+      setUserTicket( { isRemote: false, includesHotel: false });
+    }
+    if(name === 'Online') {
+      setUserTicket( { isRemote: true, includesHotel: false }); 
+    }
     if (selectedName === name) {
       setSelectedName(null);
       return;
