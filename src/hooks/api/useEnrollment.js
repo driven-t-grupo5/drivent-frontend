@@ -1,6 +1,5 @@
 import useAsync from '../useAsync';
 import useToken from '../useToken';
-
 import * as enrollmentApi from '../../services/enrollmentApi';
 
 export default function useEnrollment() {

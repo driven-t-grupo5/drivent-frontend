@@ -1,18 +1,18 @@
 import TicketComponent from '../../../components/Dashboard/Payments/TicketComponent'; 
-import { useEffect } from 'react';
 import useEnrollment from '../../../hooks/api/useEnrollment';
-import { useState } from 'react';
+import useTicketType from '../../../hooks/api/useTicket';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';
 import styled from 'styled-components';
 
 export default function payment() {
   const { enrollment } = useEnrollment();
+  const { ticketType } = useTicketType();
 
   return(
     <>
       {enrollment ? 
 
-        ( <TicketComponent/>) 
+        ( <TicketComponent ticketType = { ticketType }/>) 
 
         : 
 
