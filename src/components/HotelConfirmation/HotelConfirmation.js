@@ -1,16 +1,23 @@
 import styled from 'styled-components';
 import { Subtitle } from '../Subtitle/Subtitle';
+import { generateTicket } from '../../services/ticketApi';
+import api from '../../services/api';
 
-export const HotelConfirmation = ({ subtitle, button, setUserTicket, userTicket, setCallPayment }) => {
-  function setReserve() {
-    console.log('button value', button);
-    if(button ==='RESERVAR INGRESSO') {
-      setUserTicket( { ...userTicket, ticketStatus: 'RESERVED' } );
-    }  
-
+export const HotelConfirmation = ({ subtitle, button, userTicket, setCallPayment, ticketType }) => {
+  const setReserve = async() => {
+    const selectedTicket = ticketType.ticketType.find((type) => 
+      type.isRemote === userTicket.isRemote && type.includesHotel === userTicket.includesHotel
+    );
+    const lsObj = JSON.parse(localStorage.getItem('userData')); 
+    const body ={ userId: lsObj.user.id, ticketTypeId: selectedTicket.id };
+    const { data } = await api.post('/tickets', body, {
+      headers: {
+        Authorization: `Bearer ${lsObj.token}`,
+      },
+    });
     setCallPayment(true);
-  }
-
+    return data;
+  };
   return (
     <>
       <Subtitle subtitle={subtitle} />

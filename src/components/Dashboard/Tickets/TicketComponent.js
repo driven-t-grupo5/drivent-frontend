@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { Card } from '../../../components/Card/Card';
-import { Title } from '../../../components/Title/Title';
-import { Subtitle } from '../../../components/Subtitle/Subtitle';
-import { HotelConfirmation } from '../../../components/HotelConfirmation/HotelConfirmation';
-import  Payment  from './PaymentComponent';
+import { Card } from '../../Card/Card';
+import { Title } from '../../Title/Title';
+import { Subtitle } from '../../Subtitle/Subtitle';
+import { HotelConfirmation } from '../../HotelConfirmation/HotelConfirmation';
+import  Payment  from '../Payments/PaymentComponent';
 
 const objCard = [
   { name: 'Presencial', price: 250 },
@@ -17,8 +17,7 @@ const objHospedagem = [
 ];
 
 export default function TicketComponent(ticketType) {
-  const [userTicket, setUserTicket] = useState({ ticketStatus: '',  includesHotel: false, isRemote: false, totalValue: '' });
-  const [info, setInfo] = useState({ type: '', hotel: '', total: '' });
+  const [userTicket, setUserTicket] = useState({ ticketStatus: '', ticketValue: '',  includesHotel: false, isRemote: false });
   const [ticketModality, setTicketModality] = useState(null);
   const [showHotel, setShowHotel] = useState(null);
   const [callPayment, setCallPayment] = useState(false);
@@ -29,8 +28,7 @@ export default function TicketComponent(ticketType) {
       price += objHospedagem.find((item) => item.name === showHotel).price;
     }
 
-    const value = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
-    return value;
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   };
   
   return (
@@ -49,6 +47,7 @@ export default function TicketComponent(ticketType) {
                 selectedName={ticketModality}
                 setSelectedName={setTicketModality}
                 setUserTicket = {setUserTicket}
+                userTicket= { userTicket }
               />
             ))}
           </StyledCard>
@@ -78,8 +77,8 @@ export default function TicketComponent(ticketType) {
               <HotelConfirmation
                 subtitle={`Fechado! O total ficou em ${totalPrice()}. Agora é só confirmar`}
                 button="RESERVAR INGRESSO"
-                setUserTicket = { setUserTicket }
-                userTicket = {userTicket}
+                userTicket = { userTicket }
+                ticketType = { ticketType } 
                 setCallPayment = {setCallPayment}
               />
             </>
@@ -89,7 +88,7 @@ export default function TicketComponent(ticketType) {
 
         :
 
-        (<Payment userTicket={userTicket}/>)
+        (<Payment ticketType = {ticketType} userTicket={userTicket}/>)
       
       }
     </> 
