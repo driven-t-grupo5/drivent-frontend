@@ -23,6 +23,7 @@ export default function useBooking(token) {
 
   return {
     booking,
+    setBooking,
     bookingLoading: loading,
     bookingError: error,
   };

@@ -7,7 +7,7 @@ export default BookingContext;
 
 export function BookingProvider({ children }) {
   const token = useToken();
-  const { booking, bookingError } = useBooking(token);
+  const { booking, setBooking, bookingError } = useBooking(token);
 
-  return <BookingContext.Provider value={{ booking, bookingError }}>{children}</BookingContext.Provider>;
+  return <BookingContext.Provider value={{ booking, setBooking, bookingError }}>{children}</BookingContext.Provider>;
 }
