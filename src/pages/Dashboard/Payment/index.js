@@ -1,4 +1,4 @@
-import TicketComponent from '../../../components/Dashboard/Payments/TicketComponent'; 
+import TicketComponent from '../../../components/Dashboard/Tickets/TicketComponent'; 
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import useTicketType from '../../../hooks/api/useTicket';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';

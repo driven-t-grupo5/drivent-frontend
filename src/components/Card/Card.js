@@ -2,25 +2,25 @@ import styled from 'styled-components';
 
 export const Card = ({ name, price, selectedName, setSelectedName, setUserTicket }) => {
   const handleClick = () => {
-    if (name === 'Com Hotel') {
-      setUserTicket( { isRemote: false, includesHotel: true });
-    }
-    if (name === 'Sem Hotel') {
-      setUserTicket( { isRemote: false, includesHotel: false });
-    }
     if(name === 'Presencial') {
       setUserTicket( { isRemote: false, includesHotel: false });
     }
-    if(name === 'Online') {
+    else if(name === 'Online') {
       setUserTicket( { isRemote: true, includesHotel: false }); 
     }
+    else if (name === 'Com Hotel') {
+      setUserTicket( { isRemote: false, includesHotel: true });
+    }
+    else if (name === 'Sem Hotel') {
+      setUserTicket( { isRemote: false, includesHotel: false });
+    }  
     if (selectedName === name) {
       setSelectedName(null);
       return;
     }
     setSelectedName(name);
   };
-
+ 
   return (
     <StyledConteiner onClick={handleClick} selected={selectedName === name}>
       <StyledName>{name}</StyledName>

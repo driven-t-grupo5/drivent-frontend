@@ -3,7 +3,8 @@ import Typography from '@material-ui/core/Typography';
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Payment( userTicket, info) { // (userTicket(isRemote, includesHotel) + o id to ticketType + totalPrice )
+export default function Payment( userTicket,  ticketType, info) { // (userTicket(isRemote, includesHotel) + o id to ticketType + totalPrice )
+  console.log ('userTicket dentro do payment', userTicket);
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
     name: 'YOUR NAME HERE',
@@ -60,17 +61,17 @@ export default function Payment( userTicket, info) { // (userTicket(isRemote, in
       <StyledTypography  variant="h4">Ingresso e pagamento</StyledTypography>
       <PaymentSubtitle>Ingresso escolhido</PaymentSubtitle>
       <Ticket>
-        <TicketInfo> // (userTicket(isRemote, includesHotel) + o id to ticketType + totalPrice )
+        <TicketInfo>
           <p>
+            {!userTicket.isRemote  ? 'Remoto' : 'Presencial'}
+                    
+                    +  
                   
-            {userTicket.isRemote? 'Remoto' : 'Presencial'}
-                
-                   + 
-                   
-            {userTicket.includesHotel? 'Com Hotel' : 'Sem Hotel'}
-                   
+            {userTicket.includesHotel ? 'Com Hotel' : 'Sem Hotel'}
           </p>
-          <p>R$ {info.total}</p>
+          <p>
+            {!userTicket.ticketStatus === 'RESERVED' ?  userTicket.ticketValue : 'errrroou' }
+          </p>
         </TicketInfo>
       </Ticket>
       <Main>
