@@ -16,14 +16,14 @@ const objHospedagem = [
   { name: 'Sem Hotel', price: 0 },
   { name: 'Com Hotel', price: 350 },
 ];
-export default function TicketComponent(ticket, ticketType, ticketExists) {
+export default function TicketComponent({ ticket, ticketType, ticketExists }) {
   console.log ('TICKET', ticket, 'TICKET TYPE', ticketType, 'TICKET eXIST', ticketExists);
   const [userTicket, setUserTicket] = useState({ ticketStatus: '', ticketValue: '',  includesHotel: false, isRemote: false });
   const [ticketModality, setTicketModality] = useState(null);
   const [showHotel, setShowHotel] = useState(null); 
   const [callPayment, setCallPayment] = useState(false); 
   useEffect(() => {
-    if(ticket.ticket !== null) {
+    if(ticket !== null) {
       setPay();
     }
     return;
@@ -43,7 +43,7 @@ export default function TicketComponent(ticket, ticketType, ticketExists) {
   
   return (
     <>
-      {(!callPayment ) ? 
+      {(!callPayment ) || (!ticketExists)? 
     
         ( <>
           <Title title="Ingresso e pagamento" />
@@ -98,7 +98,7 @@ export default function TicketComponent(ticket, ticketType, ticketExists) {
 
         :
 
-        (<Payment userTicket={userTicket} ticketType = {ticketType}/>)
+        (<Payment userTicket={userTicket} ticket={ticket} ticketType = {ticketType}/>)
       
       }
     </> 

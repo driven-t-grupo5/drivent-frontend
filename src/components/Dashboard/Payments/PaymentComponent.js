@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function Payment(userTicket, ticketType) {
-  console.log ('USER TICKET', userTicket);
+export default function Payment({ userTicket, ticket, ticketType }) {
+  console.log ( 'ticket', ticket, 'ticketType', ticketType);
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
     name: 'YOUR NAME HERE',
@@ -29,7 +29,7 @@ export default function Payment(userTicket, ticketType) {
   function paymentFinalization(e) {
     e.preventDefault();
     const data = {
-      ticketId: '', //TODO PUXAR O TICKET.ID AQUI
+      ticketId: ticket.id,
       cardData: {
         issuer: testarCC(creditCard.number, cartoes),
         number: creditCard.number,
@@ -61,17 +61,17 @@ export default function Payment(userTicket, ticketType) {
       <Ticket>
         <TicketInfo>
           <p>
-            {(!userTicket.ticketType.isRemote) || (!userTicket.userTicket.isRemote) ? 'Remoto' : 'Presencial'}
+            {(ticket.ticketTypeId === ticketType.id) && (!ticketType.isRemote) || (!userTicket.isRemote) ? 'Remoto' : 'Presencial'}
                     
                     +  
                   
-            {(userTicket.ticketType.includesHotel) || (userTicket.userTicket.includesHotel) ? 'Com Hotel' : 'Sem Hotel'}
+            {(ticket.ticketTypeId === ticketType.id) && (ticketType.includesHotel) || (userTicket.includesHotel) ? 'Com Hotel' : 'Sem Hotel'}
           </p>
           <p>
             {
-              (!userTicket.ticketType.isRemote) || (userTicket.userTicket.isRemote) ? 'R$100,00' :
-                (userTicket.ticketType.includesHotel && !userTicket.ticketType.isRemote) || (userTicket.userTicket.includesHotel && !userTicket.userTicket.isRemote) ? 'R$600,00' :
-                  (!userTicket.ticketType.includesHotel && !userTicket.ticketType.isRemote) || (!userTicket.userTicket.includesHotel && !userTicket.userTicket.isRemote) && 'R$250,00'
+              (ticket.ticketTypeId === ticketType.id) && (!ticketType.isRemote) || (userTicket.isRemote) ? 'R$100,00' :
+                (ticket.ticketTypeId === ticketType.id) && (ticketType.includesHotel && !ticketType.isRemote) || (userTicket.includesHotel && !userTicket.isRemote) ? 'R$600,00' :
+                  (ticket.ticketTypeId === ticketType.id) &&  (!ticketType.includesHotel && !ticketType.isRemote) || (!userTicket.includesHotel && !userTicket.isRemote) && 'R$250,00'
             }
           </p>
         </TicketInfo>
