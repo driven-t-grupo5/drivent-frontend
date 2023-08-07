@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '../../Card/Card';
 import { Title } from '../../Title/Title';
 import { Subtitle } from '../../Subtitle/Subtitle';
@@ -15,13 +15,21 @@ const objHospedagem = [
   { name: 'Sem Hotel', price: 0 },
   { name: 'Com Hotel', price: 350 },
 ];
-
-export default function TicketComponent(ticketType) {
+export default function TicketComponent(ticket, ticketType) {
   const [userTicket, setUserTicket] = useState({ ticketStatus: '', ticketValue: '',  includesHotel: false, isRemote: false });
   const [ticketModality, setTicketModality] = useState(null);
   const [showHotel, setShowHotel] = useState(null);
   const [callPayment, setCallPayment] = useState(false);
+  useEffect(() => {
+    if(ticket) {
+      setPay();
+    }
+    return;
+  }, [ticket]);
 
+  const setPay = async() => {
+    setCallPayment(true);
+  };
   const totalPrice = () => {
     let price = objCard.find((item) => item.name === ticketModality).price;
     if (showHotel) {
