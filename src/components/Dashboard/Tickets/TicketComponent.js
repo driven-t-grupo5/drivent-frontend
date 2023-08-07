@@ -43,8 +43,7 @@ export default function TicketComponent({ ticket, ticketType, ticketExists }) {
   
   return (
     <>
-      {(!callPayment ) || (!ticketExists)? 
-    
+      {(!callPayment) ? 
         ( <>
           <Title title="Ingresso e pagamento" />
           <Subtitle subtitle="Primeiro, escolha sua modalidade de ingresso" />
