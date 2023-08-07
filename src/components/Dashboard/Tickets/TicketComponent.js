@@ -5,6 +5,7 @@ import { Title } from '../../Title/Title';
 import { Subtitle } from '../../Subtitle/Subtitle';
 import { HotelConfirmation } from '../../HotelConfirmation/HotelConfirmation';
 import  Payment  from '../Payments/PaymentComponent';
+import useTicketType from '../../../hooks/api/useTicket';
 
 const objCard = [
   { name: 'Presencial', price: 250 },
@@ -15,13 +16,14 @@ const objHospedagem = [
   { name: 'Sem Hotel', price: 0 },
   { name: 'Com Hotel', price: 350 },
 ];
-export default function TicketComponent(ticket, ticketType) {
+export default function TicketComponent(ticket, ticketType, ticketExists) {
+  console.log ('TICKET', ticket, 'TICKET TYPE', ticketType, 'TICKET eXIST', ticketExists);
   const [userTicket, setUserTicket] = useState({ ticketStatus: '', ticketValue: '',  includesHotel: false, isRemote: false });
   const [ticketModality, setTicketModality] = useState(null);
-  const [showHotel, setShowHotel] = useState(null);
-  const [callPayment, setCallPayment] = useState(false);
+  const [showHotel, setShowHotel] = useState(null); 
+  const [callPayment, setCallPayment] = useState(false); 
   useEffect(() => {
-    if(ticket) {
+    if(ticket.ticket !== null) {
       setPay();
     }
     return;
@@ -41,7 +43,7 @@ export default function TicketComponent(ticket, ticketType) {
   
   return (
     <>
-      {!callPayment ?
+      {(!callPayment ) ? 
     
         ( <>
           <Title title="Ingresso e pagamento" />
@@ -87,7 +89,7 @@ export default function TicketComponent(ticket, ticketType) {
                 button="RESERVAR INGRESSO"
                 userTicket = { userTicket }
                 ticketType = { ticketType } 
-                setCallPayment = {setCallPayment}
+                setCallPayment = { setCallPayment }
               />
             </>
           )}
@@ -96,7 +98,7 @@ export default function TicketComponent(ticket, ticketType) {
 
         :
 
-        (<Payment ticketType = {ticketType} userTicket={userTicket} ticket={ticket}/>)
+        (<Payment userTicket={userTicket} ticketType = {ticketType}/>)
       
       }
     </> 
