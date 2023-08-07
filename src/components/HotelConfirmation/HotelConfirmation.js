@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { Subtitle } from '../Subtitle/Subtitle';
-import { generateTicket } from '../../services/ticketApi';
 import api from '../../services/api';
 
 export const HotelConfirmation = ({ subtitle, button, userTicket, setCallPayment, ticketType }) => {
   const setReserve = async() => {
-    const selectedTicket = ticketType.ticketType.find((type) => 
+    const selectedTicket = ticketType.find((type) => 
       type.isRemote === userTicket.isRemote && type.includesHotel === userTicket.includesHotel
     );
+    
     const lsObj = JSON.parse(localStorage.getItem('userData')); 
     const body ={ userId: lsObj.user.id, ticketTypeId: selectedTicket.id };
     const { data } = await api.post('/tickets', body, {
@@ -16,7 +16,6 @@ export const HotelConfirmation = ({ subtitle, button, userTicket, setCallPayment
       },
     });
     setCallPayment(true);
-    return data;
   };
   return (
     <>
