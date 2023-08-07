@@ -12,9 +12,8 @@ export default function Ticket() {
   const { ticket } = useGetTicket(); 
 
   useEffect(() => {
-    console.log('ola');
     if(ticket) {
-      console.log(ticket);
+      console.log('ticket', ticket);
       setPay();
     }
     return;

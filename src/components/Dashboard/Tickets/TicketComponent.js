@@ -96,7 +96,7 @@ export default function TicketComponent(ticket, ticketType) {
 
         :
 
-        (<Payment ticketType = {ticketType} userTicket={userTicket}/>)
+        (<Payment ticketType = {ticketType} userTicket={userTicket} ticket={ticket}/>)
       
       }
     </> 

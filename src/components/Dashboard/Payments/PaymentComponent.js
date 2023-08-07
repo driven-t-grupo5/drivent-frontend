@@ -2,18 +2,17 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useState } from 'react';
 import axios from 'axios';
+import { useGetTicket } from '../../../hooks/api/useTicket';
 
-export default function Payment( userTicket,  ticketType, info) { // (userTicket(isRemote, includesHotel) + o id to ticketType + totalPrice )
-  console.log ('userTicket dentro do payment', userTicket);
+export default function Payment(ticketType) {
+  const { ticket } = useGetTicket();
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
     name: 'YOUR NAME HERE',
     valid: '••/••',
     cvc: '',
   });
-      
   const [confirmPayment, setConfirmPayment] = useState('none');
-    
   var cartoes = {
     Visa: /^4[0-9]{12}(?:[0-9]{3})/,
     Mastercard: /^5[1-5][0-9]{14}/,
@@ -31,7 +30,7 @@ export default function Payment( userTicket,  ticketType, info) { // (userTicket
   function paymentFinalization(e) {
     e.preventDefault();
     const data = {
-      ticketId: '',
+      ticketId: ticket.id,
       cardData: {
         issuer: testarCC(creditCard.number, cartoes),
         number: creditCard.number,
@@ -63,14 +62,18 @@ export default function Payment( userTicket,  ticketType, info) { // (userTicket
       <Ticket>
         <TicketInfo>
           <p>
-            {!userTicket.isRemote  ? 'Remoto' : 'Presencial'}
+            {!ticketType.isRemote  ? 'Remoto' : 'Presencial'}
                     
                     +  
                   
-            {userTicket.includesHotel ? 'Com Hotel' : 'Sem Hotel'}
+            {ticketType.includesHotel ? 'Com Hotel' : 'Sem Hotel'}
           </p>
           <p>
-            {!userTicket.ticketStatus === 'RESERVED' ?  userTicket.ticketValue : 'errrroou' }
+            {
+              !ticketType.isRemote ? 'R$100,00' :
+                ticketType.includesHotel && !ticketType.isRemote ? 'R$600,00' :
+                  !ticketType.includesHotel && !ticketType.isRemote && 'R$250,00'
+            }
           </p>
         </TicketInfo>
       </Ticket>
