@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function Payment({ userTicket, ticket, ticketType }) {
+export default function Payment({ userTicket,  ticket, ticketType }) {
   console.log ( 'ticket', ticket, 'ticketType', ticketType);
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
@@ -61,19 +61,27 @@ export default function Payment({ userTicket, ticket, ticketType }) {
       <Ticket>
         <TicketInfo>
           <p>
-            {(ticket.ticketTypeId === ticketType.id) && (!ticketType.isRemote) || (!userTicket.isRemote) ? 'Remoto' : 'Presencial'}
-                    
-                    +  
-                  
-            {(ticket.ticketTypeId === ticketType.id) && (ticketType.includesHotel) || (userTicket.includesHotel) ? 'Com Hotel' : 'Sem Hotel'}
-          </p>
-          <p>
             {
-              (ticket.ticketTypeId === ticketType.id) && (!ticketType.isRemote) || (userTicket.isRemote) ? 'R$100,00' :
-                (ticket.ticketTypeId === ticketType.id) && (ticketType.includesHotel && !ticketType.isRemote) || (userTicket.includesHotel && !userTicket.isRemote) ? 'R$600,00' :
-                  (ticket.ticketTypeId === ticketType.id) &&  (!ticketType.includesHotel && !ticketType.isRemote) || (!userTicket.includesHotel && !userTicket.isRemote) && 'R$250,00'
+              (ticketType.find(type => type.id === ticket.ticketTypeId) && (ticketType.find(type => type.id === ticket.ticketTypeId).isRemote) || userTicket.isRemote)
+                ? 'Remoto'
+                : 'Presencial'
+            }
+            +
+            {
+              (ticketType.find(type => type.id === ticket.ticketTypeId) && (ticketType.find(type => type.id === ticket.ticketTypeId).includesHotel) || userTicket.includesHotel)
+                ? ' Com Hotel'
+                : ' Sem Hotel'
             }
           </p>
+
+          <p>
+            {
+              ticketType.find(type => type.id === ticket.ticketTypeId)
+                ? `R$${ticketType.find(type => type.id === ticket.ticketTypeId).price},00`
+                : ''
+            }
+          </p>
+
         </TicketInfo>
       </Ticket>
       <Main>
