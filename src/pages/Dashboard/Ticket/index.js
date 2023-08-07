@@ -1,18 +1,32 @@
 import TicketComponent from '../../../components/Dashboard/Tickets/TicketComponent'; 
 import useEnrollment from '../../../hooks/api/useEnrollment';
-import useTicketType  from '../../../hooks/api/useTicket';
+import useTicketType, { useGetTicket }  from '../../../hooks/api/useTicket';
 import { Subtitle } from '../../../components/Subtitle/Subtitle';
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
 
 export default function Ticket() {
+  const [callPayment, setCallPayment] = useState(false);
   const { enrollment } = useEnrollment();
   const { ticketType } = useTicketType();
+  const { ticket } = useGetTicket(); 
 
+  useEffect(() => {
+    console.log('ola');
+    if(ticket) {
+      console.log(ticket);
+      setPay();
+    }
+    return;
+  }, [ticket]);
+  const setPay = async() => {
+    setCallPayment(true);
+  };
   return(
     <>
       {enrollment ? 
 
-        ( <TicketComponent ticketType = { ticketType }/>) 
+        ( <TicketComponent ticket = { ticket } ticketType = { ticketType } callPayment= {callPayment } setCallPayment={setCallPayment} />) 
 
         : 
 

@@ -20,6 +20,23 @@ export default function useTicketType() {
   };
 };
 
+export function useGetTicket() {
+  const token = useToken();
+
+  const {
+    data: ticket,
+    loading: tickeLoading,
+    error: ticketError,
+    act: getTickets
+  } = useAsync(() => ticketApi.getTickets(token));
+
+  return {
+    ticket,
+    tickeLoading,
+    ticketError,
+    getTickets
+  };
+}
 export function insertTicket(body) {
   const token = useToken();
   const {
