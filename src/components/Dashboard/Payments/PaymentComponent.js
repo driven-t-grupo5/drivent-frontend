@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 export default function Payment({ userTicket,  ticket, ticketType }) {
-  console.log ( 'ticket', ticket, 'ticketType', ticketType);
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
     name: 'YOUR NAME HERE',
@@ -76,7 +75,7 @@ export default function Payment({ userTicket,  ticket, ticketType }) {
 
           <p>
             {
-              ticketType.find(type => type.id === ticket.ticketTypeId)
+              ticketType.sto(type => type.id === ticket.ticketTypeId)
                 ? `R$${ticketType.find(type => type.id === ticket.ticketTypeId).price},00`
                 : ''
             }
