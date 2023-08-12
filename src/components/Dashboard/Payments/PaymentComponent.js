@@ -38,7 +38,7 @@ export default function Payment({ userTicket,  ticket, ticketType }) {
       },
     };
     const user = JSON.parse(localStorage.getItem('userData'));
-    const promise = axios.post(`${process.env.REACT_APP_API_URL}/payments/process`, data, {
+    const promise = axios.post(`${process.env.REACT_APP_API_BASE_URL}/payments/process`, data, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
