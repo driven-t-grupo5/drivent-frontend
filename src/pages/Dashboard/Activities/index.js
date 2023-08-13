@@ -11,6 +11,8 @@ export default function Activities() {
   const [event, setEvent] = useState();
   const [date, setDate] = useState();
   const [formatDate, setFormatDate] = useState();
+  const [activities, setActivities] = useState([]);
+  console.log(event);
   function selectDay(d) {
     setClickDay({ day: d });
     const promise = axios.get(`${process.env.REACT_APP_API_BASE_URL}/activities/${d}`, {
@@ -54,11 +56,27 @@ export default function Activities() {
     }
     setFormatDate(days);
   }
+  function subscribe(e, id) {
+    e.preventDefault(); 
+    const promise = axios.post(`${process.env.REACT_APP_API_BASE_URL}/activities/${id}/enroll`, '', {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+    promise.then((res) => {
+      setActivities([... activities, id]);
+      alert('Inscrito com sucesso');
+    });
+    promise.catch((erro) => {
+      alert(`${erro.response.data.message}`);
+    });
+  }
+  console.log(activities);
   return (
     <>
       <Title title="Escolha de atividades" />
       <Subtitle subtitle="Primeiro, filtre pelo dia do evento:" />
-      {!formatDate ? <></> : formatDate.map((b) => <DayButton clickDay={clickDay} day={b.Data} onClick={e => selectDay(b.Data)}>{b.Week}, {b.Day}</DayButton>)}
+      {!formatDate ? <></> : formatDate.map((b) => <DayButton key={b.Data} clickDay={clickDay} day={b.Data} onClick={e => selectDay(b.Data)}>{b.Week}, {b.Day}</DayButton>)}
       <VenueArea event={event}>
         <table>
           <tr>
@@ -68,39 +86,39 @@ export default function Activities() {
           </tr>
           <tr>
             <td> {/* AUDITORIO PRINCIPAL */}
-              {!event ? <></> : event.filter(e => e.venue.id === 1).map(e => <Activity>
+              {!event ? <></> : event.filter(e => e.venue.id === 1).map(e => <Activity key={e.id} id={e.id} px={Number((e.endDate[11]+e.endDate[12]+e.endDate[14]+e.endDate[15])-Number(e.startDate[11]+e.startDate[12]+e.startDate[14]+e.startDate[15]))/100*80} activities={activities} onClick={b => subscribe(b, e.id)}>
                 <Info>
                   <h1>{e.name}</h1>
                   <p>{e.startDate[11] + e.startDate[12]}:{e.startDate[14] + e.startDate[15]} - {e.endDate[11] + e.endDate[12]}:{e.endDate[14] + e.endDate[15]}</p>
                 </Info>
-                <Icon capacity={e.capacity}>
-                  <ion-icon name={e.capacity === 0 ? 'close-circle-outline' : 'log-in-outline'}></ion-icon>
-                  <p>{e.capacity} vagas</p>
+                <Icon capacity={e.availableTickets}>
+                  <ion-icon name={e.availableTickets === 0 ? 'close-circle-outline' : 'log-in-outline'}></ion-icon>
+                  <p>{e.availableTickets} vagas</p>
                 </Icon>
               </Activity>)}
             </td>
             {/* AUDITORIO LATERAL */}
             <td>
-              {!event ? <></> : event.filter(e => e.venue.id === 2).map(e => <Activity>
+              {!event ? <></> : event.filter(e => e.venue.id === 2).map(e => <Activity key={e.id} id={e.id} px={Number((e.endDate[11]+e.endDate[12]+e.endDate[14]+e.endDate[15])-Number(e.startDate[11]+e.startDate[12]+e.startDate[14]+e.startDate[15]))/100*80} activities={activities} onClick={b => subscribe(b, e.id)}>
                 <Info>
                   <h1>{e.name}</h1>
                   <p>{e.startDate[11] + e.startDate[12]}:{e.startDate[14] + e.startDate[15]} - {e.endDate[11] + e.endDate[12]}:{e.endDate[14] + e.endDate[15]}</p>
                 </Info>
-                <Icon capacity={e.capacity}>
-                  <ion-icon name={e.capacity === 0 ? 'close-circle-outline' : 'log-in-outline'}></ion-icon>
-                  <p>{e.capacity} vagas</p>
+                <Icon capacity={e.availableTickets}>
+                  <ion-icon name={e.availableTickets === 0 ? 'close-circle-outline' : 'log-in-outline'}></ion-icon>
+                  <p>{e.availableTickets} vagas</p>
                 </Icon>
               </Activity>)}</td>
             {/* SALA DE WORKSHOP */}
             <td>
-              {!event ? <></> : event.filter(e => e.venue.id === 3).map(e => <Activity>
+              {!event ? <></> : event.filter(e => e.venue.id === 3).map(e => <Activity key={e.id} id={e.id} px={Number((e.endDate[11]+e.endDate[12]+e.endDate[14]+e.endDate[15])-Number(e.startDate[11]+e.startDate[12]+e.startDate[14]+e.startDate[15]))/100*80} activities={activities} onClick={b => subscribe(b, e.id)}>
                 <Info>
                   <h1>{e.name}</h1>
                   <p>{e.startDate[11] + e.startDate[12]}:{e.startDate[14] + e.startDate[15]} - {e.endDate[11] + e.endDate[12]}:{e.endDate[14] + e.endDate[15]}</p>
                 </Info>
-                <Icon capacity={e.capacity}>
-                  <ion-icon  name={e.capacity === 0 ? 'close-circle-outline' : 'log-in-outline'}></ion-icon>
-                  <p>{e.capacity} vagas</p>
+                <Icon capacity={e.availableTickets}>
+                  <ion-icon  name={e.availableTickets === 0 ? 'close-circle-outline' : 'log-in-outline'}></ion-icon>
+                  <p>{e.availableTickets} vagas</p>
                 </Icon>
               </Activity>)}</td>
           </tr>
@@ -149,9 +167,10 @@ const VenueArea = styled.div`
 `;
 
 const Activity = styled.div`
-  background-color: #F1F1F1;
+  background-color: ${(props) => (props.activities.includes(props.id) ? '#D0FFDB' : '#F1F1F1')};
+  pointer-events:${(props) => (props.activities.includes(props.id) ? 'none' : 'auto')};
   width: 265px;
-  height: 79px;
+  height:${(props) => props.px}px;
   margin-top: 10px;
   margin-left: 10px;
   border-radius: 5px;
