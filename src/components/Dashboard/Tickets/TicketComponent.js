@@ -17,18 +17,19 @@ const objHospedagem = [
   { name: 'Com Hotel', price: 350 },
 ];
 export default function TicketComponent({  ticketType, ticketExists }) {
-  const { ticket } =useGetTicket();
+  const [createdTicket, setCreatedTicket] = useState();
   const [userTicket, setUserTicket] = useState({ ticketStatus: '', ticketValue: '',  includesHotel: false, isRemote: false });
   const [ticketModality, setTicketModality] = useState(null);
   const [showHotel, setShowHotel] = useState(null); 
   const [callPayment, setCallPayment] = useState(false); 
-  useEffect(() => {
+  
+  /*useEffect(() => {
     if(ticket !== null) {
       setPay();
     }
     return;
   }, [ticket]);
-
+  */
   const setPay = async() => {
     setCallPayment(true);
   };
@@ -89,6 +90,7 @@ export default function TicketComponent({  ticketType, ticketExists }) {
                 userTicket = { userTicket }
                 ticketType = { ticketType } 
                 setCallPayment = { setCallPayment }
+                setCreatedTicket={ setCreatedTicket }
               />
             </>
           )}
@@ -97,7 +99,7 @@ export default function TicketComponent({  ticketType, ticketExists }) {
 
         :
 
-        (<Payment userTicket={userTicket} ticket={ticket} ticketType = {ticketType}/>)
+        (<Payment userTicket={userTicket} createdTicket= {createdTicket} ticketType = {ticketType}/>)
       
       }
     </> 

@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useGetTicket } from '../../../hooks/api/useTicket';
 
-export default function Payment({ userTicket, ticket,  ticketType }) {
-  console.log ('TICKET DENTRO DO ', ticket);
+export default function Payment({ userTicket,  ticketType, createdTicket }) {
+  console.log ('createdTicket dentro do payments', createdTicket);
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
     name: 'YOUR NAME HERE',
@@ -30,7 +30,7 @@ export default function Payment({ userTicket, ticket,  ticketType }) {
   function paymentFinalization(e) {
     e.preventDefault();
     const data = {
-      ticketId: ticket.id,
+      ticketId: createdTicket.id,
       cardData: {
         issuer: testarCC(creditCard.number, cartoes),
         number: creditCard.number,
@@ -63,13 +63,13 @@ export default function Payment({ userTicket, ticket,  ticketType }) {
         <TicketInfo>
           <p>
             {
-              (ticketType.find(type => type.id === ticket.ticketTypeId) && (ticketType.find(type => type.id === ticket.ticketTypeId).isRemote) || userTicket.isRemote)
+              (ticketType.find(type => type.id === createdTicket.ticketTypeId) && (ticketType.find(type => type.id === createdTicket.ticketTypeId).isRemote) || userTicket.isRemote)
                 ? 'Remoto'
                 : 'Presencial'
             }
             +
             {
-              (ticketType.find(type => type.id === ticket.ticketTypeId) && (ticketType.find(type => type.id === ticket.ticketTypeId).includesHotel) || userTicket.includesHotel)
+              (ticketType.find(type => type.id === createdTicket.ticketTypeId) && (ticketType.find(type => type.id === createdTicket.ticketTypeId).includesHotel) || userTicket.includesHotel)
                 ? ' Com Hotel'
                 : ' Sem Hotel'
             }
@@ -77,8 +77,8 @@ export default function Payment({ userTicket, ticket,  ticketType }) {
 
           <p>
             {
-              ticketType.find(type => type.id === ticket.ticketTypeId)
-                ? `R$${ticketType.find(type => type.id === ticket.ticketTypeId).price},00`
+              ticketType.find(type => type.id === createdTicket.ticketTypeId)
+                ? `R$${ticketType.find(type => type.id === createdTicket.ticketTypeId).price},00`
                 : ''
             }
           </p>
