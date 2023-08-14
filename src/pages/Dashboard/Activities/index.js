@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 export default function Activities() {
   const user = JSON.parse(localStorage.getItem('userData'));
@@ -12,7 +13,8 @@ export default function Activities() {
   const [date, setDate] = useState();
   const [formatDate, setFormatDate] = useState();
   const [activities, setActivities] = useState([]);
-  console.log(event);
+  const [payment, setPayment] = useState();
+  const navigate = useNavigate();
   function selectDay(d) {
     setClickDay({ day: d });
     const promise = axios.get(`${process.env.REACT_APP_API_BASE_URL}/activities/${d}`, {
@@ -28,20 +30,37 @@ export default function Activities() {
       alert(`${erro.response.status} ${erro.response.statusText}`);
     });
   }
-  
   useEffect(() => {
-    const promise = axios.get(`${process.env.REACT_APP_API_BASE_URL}/activities/dates`, {
+    const promisse = axios.get(`${process.env.REACT_APP_API_BASE_URL}/tickets`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     });
 
-    promise.then((res) => {
-      setDate(res.data.dates);
-      dateFormat(res.data.dates);
+    promisse.then((res) => {
+      setPayment(res.data);
+      if(res.data.status === 'RESERVED') {
+        alert('voce ainda nao fez seu pagamento');
+        navigate('/dashboard/ticket');
+      } else {
+        const promise = axios.get(`${process.env.REACT_APP_API_BASE_URL}/activities/dates`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+    
+        promise.then((res) => {
+          setDate(res.data.dates);
+          dateFormat(res.data.dates);
+        });
+        promise.catch((erro) => {
+          alert(`${erro.response.status} ${erro.response.statusText}`);
+        });
+      }
     });
-    promise.catch((erro) => {
-      alert(`${erro.response.status} ${erro.response.statusText}`);
+    promisse.catch((erro) => {
+      alert('voce ainda nao fez seu pagamento');
+      navigate('/dashboard/ticket');
     });
     return;
   }, []);
@@ -71,12 +90,16 @@ export default function Activities() {
       alert(`${erro.response.data.message}`);
     });
   }
-  console.log(activities);
   return (
     <>
+      {console.log(payment)}
       <Title title="Escolha de atividades" />
-      <Subtitle subtitle="Primeiro, filtre pelo dia do evento:" />
-      {!formatDate ? <></> : formatDate.map((b) => <DayButton key={b.Data} clickDay={clickDay} day={b.Data} onClick={e => selectDay(b.Data)}>{b.Week}, {b.Day}</DayButton>)}
+      {!payment ? <></> : (payment.ticketTypeId === 3) ? 
+        <Subtitle subtitle="Sua modalidade de ingresso não necessita escolher atividade. Você terá acesso a todas as atividades."/>
+        :  <Subtitle subtitle="Primeiro, filtre pelo dia do evento:" />}
+      {!payment ? <></> : (payment.ticketTypeId === 3) ? 
+        <></>         : !formatDate ? <></> : formatDate.map((b) => <DayButton key={b.Data} clickDay={clickDay} day={b.Data} onClick={e => selectDay(b.Data)}>{b.Week}, {b.Day}</DayButton>) }
+      
       <VenueArea event={event}>
         <table>
           <tr>
