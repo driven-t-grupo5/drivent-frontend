@@ -197,20 +197,22 @@ const Info = styled.div`
 
 const Icon = styled.div`
   margin-left: 10px;
-  height: 60px;
   margin-top: 10px;
+  margin-bottom: 10px;
   border-left: 1px solid #CFCFCF;
   position: relative;
   ion-icon {
     width: 20px;
     color : ${(props) => (props.capacity === 0) ? '#CC6666' : '#078632'};
     position: absolute;
-    top: 15px;
-    left: 18px;
+    top: 35%;
+    margin-left: 18px;
   }
   p{
     color: ${(props) => (props.capacity === 0) ? '#CC6666' : '#078632'};
     font-size: 9px;
-    margin-top: 35px;
+    position: absolute;
+    top: 45%;
+    width: 100px;
   }
 `;
