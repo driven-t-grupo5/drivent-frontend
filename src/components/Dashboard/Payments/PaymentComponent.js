@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useGetTicket } from '../../../hooks/api/useTicket';
 
-export default function Payment({ userTicket,  ticket, ticketType }) {
+export default function Payment({ userTicket, ticket,  ticketType }) {
+  console.log ('TICKET DENTRO DO ', ticket);
   const [creditCard, setCreditCard] = useState({
     number: '•••• •••• •••• ••••',
     name: 'YOUR NAME HERE',
@@ -75,7 +77,7 @@ export default function Payment({ userTicket,  ticket, ticketType }) {
 
           <p>
             {
-              ticketType.sto(type => type.id === ticket.ticketTypeId)
+              ticketType.find(type => type.id === ticket.ticketTypeId)
                 ? `R$${ticketType.find(type => type.id === ticket.ticketTypeId).price},00`
                 : ''
             }

@@ -5,7 +5,7 @@ import { Title } from '../../Title/Title';
 import { Subtitle } from '../../Subtitle/Subtitle';
 import { HotelConfirmation } from '../../HotelConfirmation/HotelConfirmation';
 import  Payment  from '../Payments/PaymentComponent';
-import useTicketType from '../../../hooks/api/useTicket';
+import useTicketType, { useGetTicket } from '../../../hooks/api/useTicket';
 
 const objCard = [
   { name: 'Presencial', price: 250 },
@@ -16,8 +16,8 @@ const objHospedagem = [
   { name: 'Sem Hotel', price: 0 },
   { name: 'Com Hotel', price: 350 },
 ];
-export default function TicketComponent({ ticket, ticketType, ticketExists }) {
-  console.log ('TICKET', ticket, 'TICKET TYPE', ticketType, 'TICKET eXIST', ticketExists);
+export default function TicketComponent({  ticketType, ticketExists }) {
+  const { ticket } =useGetTicket();
   const [userTicket, setUserTicket] = useState({ ticketStatus: '', ticketValue: '',  includesHotel: false, isRemote: false });
   const [ticketModality, setTicketModality] = useState(null);
   const [showHotel, setShowHotel] = useState(null); 
