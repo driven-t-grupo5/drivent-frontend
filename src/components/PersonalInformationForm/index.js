@@ -11,6 +11,8 @@ import useCep from '../../hooks/api/useCep';
 import useEnrollment from '../../hooks/api/useEnrollment';
 import useSaveEnrollment from '../../hooks/api/useSaveEnrollment';
 import { useForm } from '../../hooks/useForm';
+import useToken from '../../hooks/useToken';
+import UserContext from '../../contexts/UserContext';
 
 import Input from '../Form/Input';
 import Button from '../Form/Button';
@@ -33,7 +35,7 @@ export default function PersonalInformationForm() {
 
   const { handleSubmit, handleChange, data, errors, setData, customHandleChange } = useForm({
     validations: FormValidations,
-
+  
     onSubmit: async(data) => {
       const newData = {
         name: data.name,
@@ -95,7 +97,7 @@ export default function PersonalInformationForm() {
   function isValidCep(cep) {
     return cep.length === 8;
   }
-
+ 
   async function handleCepChanges(event) {
     const { name, value } = event.target;
 

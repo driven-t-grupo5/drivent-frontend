@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { toast } from 'react-toastify';
-import { json, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import AuthLayout from '../../layouts/Auth';
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
@@ -12,7 +12,6 @@ import useSignIn from '../../hooks/api/useSignIn';
 import QueryString from 'qs';
 import axios from 'axios';
 export default function SignIn() {
-  const [gitUserCode, setGitUserCode] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { loadingSignIn, signIn } = useSignIn();
@@ -21,8 +20,7 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const handleGitHubLogin = async() => {
-    const GITHUB_URL = 'https://github.com/login/oauth/authorize';
-    const CLIENT_ID = 'ec78846bc23b00734918';
+    const GITHUB_URL = 'https://github.com/login/oauth/authorize?';
     const params = {
       response_type: 'code',
       scope: 'user',
@@ -30,42 +28,29 @@ export default function SignIn() {
       redirect_uri: 'http://localhost:3000/sign-in'
     };
     
-    const queryParams = new URLSearchParams(window.location.search);
-    
-    const code = queryParams.get('code');
-    if (code) { 
-      try {
-        const result = await fetchGitPost(code);
-        setUserData(result.data);
-        toast.success('Login realizado com sucesso!');
-        navigate('/dashboard');
-      } catch (error) {
-        return error;
-      }
-    }
-
     const queryString = QueryString.stringify(params);
-
-    const authURL = `https://github.com/login/oauth/authorize?${queryString}`;
-
+    const authURL = `${GITHUB_URL}${queryString}`;
     try {  
       window.location.href = authURL;
+      const queryParams = new URLSearchParams(window.location.search);
+      const code = queryParams.get('code');
+      if (code) { 
+        try {
+          const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/sign-in/github?code=${code}`);
+          console.log(data);
+          setUserData({ data });
+          toast('Login realizado com sucesso!');
+          navigate('/dashboard');
+        } catch (error) {
+          return error;
+        }
+      }
     } catch (error) {
       console.log('error', error);
       toast('Não foi possível fazer login com o GitHub');
     }
   };
 
-  const fetchGitPost = async(access_token) => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/sign-in/github?code=${access_token}`);
-      return response;
-    } catch (error) {
-      toast('não foi possível chamar o gitPost');
-      console.log (error);
-      return error;
-    }
-  };
   async function submit(event) {
     event.preventDefault();
 
